@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "0cae2f94-42dd-4ae3-82e6-37cc54e22951": {
+      "ProjectGuid": "0cae2f94-42dd-4ae3-82e6-37cc54e22951",
+      "DisplayName": "Chatter",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}

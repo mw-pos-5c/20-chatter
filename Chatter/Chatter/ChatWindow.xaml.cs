@@ -18,19 +18,54 @@ namespace Chatter
     /// <summary>
     /// Interaktionslogik für ChatWindow.xaml
     /// </summary>
-    public partial class ChatWindow : Window
+    public partial class ChatWindow : Window, IObserver
     {
+        private Subject subject;
 
-        public string Title { get; private set; }
-        private MessageSubject subject;
-       
+        public string ClientName { get; }
+        public string TopicsOfInterest => throw new NotImplementedException();
 
-        public ChatWindow(MessageSubject subject, string title)
+        public ChatWindow(Subject subject, string name)
         {
-            DataContext = this;
             InitializeComponent();
-            Title = title;
+            ClientName = name;
+            Title = $"ChatClient: {ClientName}";
+            ClientNameLabel.Content = ClientName;
+            
             this.subject = subject;
+            this.subject.Attach(this);
+        }
+
+        public void ClientAttached(string name)
+        {
+        }
+
+        public void ClientDetached(string name)
+        {
+        }
+
+
+        public void Update(Message msg)
+        {
+            MessagesListView.Items.Add(msg.ToString());
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var msg = ChatInputTextBox.Text;
+            if (msg.Length == 0) return;
+
+            subject.Notify(new Message
+            {
+                Content = msg,
+                Date = DateTime.Now,
+                Name = ClientName,
+            });
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            subject.Detach(this);
         }
     }
 }

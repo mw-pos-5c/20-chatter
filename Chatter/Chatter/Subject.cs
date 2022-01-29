@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chatter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,32 +9,44 @@ namespace ClockObserver
 {
     public class Subject
     {
-        private List<IObserver> observers = new List<IObserver>();
+        protected List<IObserver> observers = new List<IObserver>();
+        public int NrObservers { get
+            {
+                return observers.Count; 
+            }
+        }
 
-
-        public void Attach(IObserver observer)
+        public virtual void Attach(IObserver observer)
         {
             lock (observers)
             {
                 observers.Add(observer);
+                foreach (IObserver i in observers)
+                {
+                    i.ClientAttached(observer.ClientName);
+                }
             }
         }
 
-        public void Detach(IObserver observer)
+        public virtual void Detach(IObserver observer)
         {
             lock (observers)
             {
                 observers.Remove(observer);
+                foreach (IObserver i in observers)
+                {
+                    i.ClientDetached(observer.ClientName);
+                }
             }
         }
 
-        public void Notify()
+        public virtual void Notify(Message msg)
         {
             lock (observers)
             {
                 foreach (IObserver observer in observers)
                 {
-                    observer.Update();
+                    observer.Update(msg);
                 }
             }
         }
